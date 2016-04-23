@@ -28,7 +28,7 @@ Install and use by directly including the [browser files](dist):
 </head>
 
 <body>
-  <a-scene altspace="units:pixels">
+  <a-scene altspace="units:meters">
     <a-entity geometry="primitive: box" material="color: #C03546"></a-entity>
   </a-scene>
 </body>
