@@ -10,10 +10,10 @@ Note that when running in Altspace, the scene will not respond to cursor events 
 
 | Property  | Description | Default Value |
 | --------  | ----------- | ------------- |
-| autoscale | Scale scene when running in Altspace, so 1 unit is 1 meter in-game. | true |
+| `units` | Scale scene when running in Altspace, so 1 unit is 1 meter. To have the app scale with the enclosure (similar to a three.js SDK app) set units to `pixels` | `meters` |
 
 ### Usage
-Add the "altspace" parameter on your `<a-scene>` like so: `<a-scene altspace="autoscale:true">`
+Add the "altspace" parameter on your `<a-scene>` like so: `<a-scene altspace>`
 
 
 #### Example
@@ -24,11 +24,11 @@ Install and use by directly including the [browser files](dist):
 <head>
   <title>My A-Frame Scene</title>
   <script src="https://aframe.io/releases/0.2.0/aframe.min.js"></script>
-  <script src="https://cdn.rawgit.com/AltspaceVR/aframe-altspace-component/v0.1.0/dist/aframe-altspace-component.min.js"></script>
+  <script src="https://cdn.rawgit.com/AltspaceVR/aframe-altspace-component/v0.2.0/dist/aframe-altspace-component.min.js"></script>
 </head>
 
 <body>
-  <a-scene altspace="autoscale:true">
+  <a-scene altspace="units:pixels">
     <a-entity geometry="primitive: box" material="color: #C03546"></a-entity>
   </a-scene>
 </body>

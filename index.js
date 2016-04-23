@@ -6,8 +6,12 @@ if (typeof AFRAME === 'undefined') {
  * aframe-altspace-component component for A-Frame.
  */
 AFRAME.registerComponent('altspace', {
+
+  /**
+   * units: ['meters', 'pixels']
+   */
   schema: { 
-    autoscale: { type: 'boolean', default: 'true' }
+    units: { type: 'string', default: 'meters'}
   },
 
   /**
@@ -26,13 +30,14 @@ AFRAME.registerComponent('altspace', {
     }
     if (window.altspace && window.altspace.inClient) {
       var scene = this.el.object3D;
-      if (this.data.autoscale) {
+      if (this.data.units && this.data.units === 'meters') {
         altspace.getEnclosure().then(function(e) {
-          console.log('aframe-altspace-component autoscaling scene by', e.pixelsPerMeter);
           scene.scale.multiplyScalar(e.pixelsPerMeter);
         });
+      } else {
+          scene.scale.set(1, 1, 1);
       }
-      var renderer = this.el.renderer =  altspace.getThreeJSRenderer({version: '0.2.0'});
+      var renderer = this.el.renderer = altspace.getThreeJSRenderer();
       var noop = function() {};
       renderer.setSize = noop;
       renderer.setPixelRatio = noop;
