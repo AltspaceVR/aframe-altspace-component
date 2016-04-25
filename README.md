@@ -10,7 +10,7 @@ Note that when running in Altspace, the scene will not respond to cursor events 
 
 | Property  | Description | Default Value |
 | --------  | ----------- | ------------- |
-| `usePixelScale` | Treat a unit as a CSS Pixel, and have your scene scale with the scale of the AltspaceVR web browser. This is the default behavior in AltspaceVR for three.js apps. In A-Frame, however, the default value is `false`, as units are in meters by default.
+| `usePixelScale` | Treat a unit as a CSS Pixel, and have your scene scale with the scale of the AltspaceVR web browser. This is the default behavior in AltspaceVR for three.js apps. In A-Frame, however, the default value is `false`, as units are in meters by default. | `false`
 
 ### Usage
 Add the "altspace" parameter on your `<a-scene>` like so: `<a-scene altspace>`
