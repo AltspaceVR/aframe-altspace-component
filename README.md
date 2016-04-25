@@ -10,7 +10,7 @@ Note that when running in Altspace, the scene will not respond to cursor events 
 
 | Property  | Description | Default Value |
 | --------  | ----------- | ------------- |
-| `units` | Scale scene when running in Altspace, so 1 unit is 1 meter. To have the app scale with the enclosure (similar to a three.js SDK app) set units to `pixels` | `meters` |
+| `usePixelScale` | Treat a unit as a CSS Pixel, and have your scene scale with the scale of the AltspaceVR web browser. This is the default behavior in AltspaceVR for three.js apps. In A-Frame, however, the default value is `false`, as units are in meters by default.
 
 ### Usage
 Add the "altspace" parameter on your `<a-scene>` like so: `<a-scene altspace>`
@@ -28,7 +28,7 @@ Install and use by directly including the [browser files](dist):
 </head>
 
 <body>
-  <a-scene altspace="units:meters">
+  <a-scene altspace>
     <a-entity geometry="primitive: box" material="color: #C03546"></a-entity>
   </a-scene>
 </body>

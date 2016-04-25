@@ -8,10 +8,10 @@ if (typeof AFRAME === 'undefined') {
 AFRAME.registerComponent('altspace', {
 
   /**
-   * units: ['meters', 'pixels']
+   * usePixelScale will allow you to use A-Frame units as CSS pixels. This is the default behavior for three.js apps, but not for A-Frame apps.
    */
   schema: { 
-    units: { type: 'string', default: 'meters'}
+    usePixelScale: { type: 'boolean', default: 'false'}
   },
 
   /**
@@ -30,12 +30,12 @@ AFRAME.registerComponent('altspace', {
     }
     if (window.altspace && window.altspace.inClient) {
       var scene = this.el.object3D;
-      if (this.data.units && this.data.units === 'meters') {
+      if (this.data.usePixelScale) {
+        scene.scale.set(1, 1, 1);
+      } else {
         altspace.getEnclosure().then(function(e) {
           scene.scale.multiplyScalar(e.pixelsPerMeter);
         });
-      } else {
-          scene.scale.set(1, 1, 1);
       }
       var renderer = this.el.renderer = altspace.getThreeJSRenderer();
       var noop = function() {};
