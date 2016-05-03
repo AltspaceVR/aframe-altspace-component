@@ -17,17 +17,41 @@ AFRAME.registerComponent('altspace', {
   /**
    * Called once when component is attached. Generally for initial setup.
    */
-  init: function () {},
+  init: function () {
+    if (!(this.el.object3D instanceof THREE.Scene)) {
+      console.warn('aframe-altspace-component can only be attached to a-scene');
+      return;
+    }
+
+    if (window.altspace && window.altspace.inClient) {
+      var scene = this.el.object3D;
+      var cursorEl = document.querySelector('a-cursor') || document.querySelector('a-entity[cursor]');
+      if (cursorEl) { 
+        // Hide A-Frame cursor mesh.
+        cursorEl.setAttribute('material', 'transparent', true);
+        cursorEl.setAttribute('material', 'opacity', 0.0);
+      }
+      var cursordownObj = null;
+      scene.addEventListener('cursordown', function(event) {
+        cursordownObj = event.target;
+      });
+      scene.addEventListener('cursorup', function(event) {
+        if (event.target.uuid === cursordownObj.uuid) {
+          // Fire click event. TODO: other A-frame events.
+          event.target.el.emit('click', {target: event.target.el});
+          cursorEl.emit('click', {target: event.target.el});
+        }
+        cursordownObj = null;
+      });
+    }
+
+  },
 
   /**
    * Called when component is attached and when component data changes.
    * Generally modifies the entity based on the data.
    */
   update: function (oldData) {
-    if (!(this.el.object3D instanceof THREE.Scene)) {
-      console.warn('aframe-altspace-component can only be attached to a-scene');
-      return;
-    }
     if (window.altspace && window.altspace.inClient) {
       var scene = this.el.object3D;
       if (!this.data.usePixelScale) {
