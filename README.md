@@ -23,7 +23,7 @@ Install and use by directly including the [browser files](dist):
 ```html
 <head>
   <title>My A-Frame Scene</title>
-  <script src="https://aframe.io/releases/0.2.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.2.1/aframe.min.js"></script>
   <script src="https://cdn.rawgit.com/AltspaceVR/aframe-altspace-component/v0.2.0/dist/aframe-altspace-component.min.js"></script>
 </head>
 
