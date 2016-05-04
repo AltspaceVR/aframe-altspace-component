@@ -4,7 +4,7 @@ Component to make an [A-Frame](https://aframe.io) scene compatible with [Altspac
 
 Live examples: http://altspacevr.github.io/aframe/examples/ (forked from [aframevr/aframe](https://github.com/aframevr/aframe))
 
-Note that when running in Altspace, the scene will not respond to cursor events nor be synchronized between users.  In addition, the following A-Frame features are currently not supported in Altspace: lights, transparency, and video.  For details, see the [Three.js Feature Support](http://github.com/AltspaceVR/AltspaceSDK#threejs-feature-support) section in the [AltspaceSDK](http://github.com/AltspaceVR/AltspaceSDK) repo. 
+Note that when running in Altspace, the scene will not be synchronized between users.  In addition, the following A-Frame features are currently not supported in Altspace: lights, transparency, and video.  For details, see the [Three.js Feature Support](http://github.com/AltspaceVR/AltspaceSDK#threejs-feature-support) section in the [AltspaceSDK](http://github.com/AltspaceVR/AltspaceSDK) repo. 
 
 ### Properties
 
