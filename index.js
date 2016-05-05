@@ -71,7 +71,6 @@ AFRAME.registerComponent('altspace', {
 
     var scene = this.el.object3D;
     if (!this.data.usePixelScale) {
-      console.log('useMeterScale');//XXX
       altspace.getEnclosure().then(function(e) {
         scene.scale.multiplyScalar(e.pixelsPerMeter);
       });
