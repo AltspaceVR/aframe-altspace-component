@@ -18,6 +18,7 @@
 	PlaceholderMesh.prototype.constructor = THREE.PlaceholderMesh;
 
 	function nativeComponentInit() {
+		var existingMesh = this.el.getObject3D('mesh');
 		var mesh = this.el.getOrCreateObject3D('mesh', PlaceholderMesh);
 
 		//If you attach native components to an entity, it will not use a default collider
@@ -25,19 +26,31 @@
 		mesh.userData.altspace.collider = mesh.userData.altspace.collider || {};
 		mesh.userData.altspace.collider.enabled = false;
 
-		altspace.addNativeComponent(mesh, this.name);
+		if (altspace.inClient) {
+			altspace.addNativeComponent(mesh, this.name);
+		}
+		else if (!existingMesh) {
+			this.el.setAttribute('geometry', 'primitive: box');
+			this.el.setAttribute('material', 'color: white');
+		}
 		this.update(this.data);//to pass defaults
 	}
 	function nativeComponentRemove() {
-		var mesh = this.el.getObject3D('mesh');
-		altspace.removeNativeComponent(mesh, this.name);
+		if (altspace.inClient) {
+			var mesh = this.el.getObject3D('mesh');
+			altspace.removeNativeComponent(mesh, this.name);
+		}
 	}
 	function nativeComponentUpdate(oldData) {
-		altspace.updateNativeComponent(this.el.object3DMap.mesh, this.name, this.data);
+		if (altspace.inClient) {
+			altspace.updateNativeComponent(this.el.object3DMap.mesh, this.name, this.data);
+		}
 	}
 
 	function callComponent(functionName, functionArguments) {
-		altspace.callNativeComponent(this.el.object3DMap.mesh, this.name, functionName, functionArguments)
+		if (altspace.inClient) {
+			altspace.callNativeComponent(this.el.object3DMap.mesh, this.name, functionName, functionArguments)
+		}
 	}
 
 	/**
