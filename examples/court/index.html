@@ -1,0 +1,40 @@
+<html>
+<head>
+	<title>Court</title>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/r74/build/three.min.js"></script>
+	<script src="https://aframe.io/releases/0.3.0/aframe.min.js"></script>
+	<script src="../../dist/aframe-altspace-component.js"></script>
+	<script src="https://sdk.altvr.com/libs/altspace.js/0.25.0/altspace.min.js"></script>
+</head>
+<body>
+	<a-scene altspace="fullspace: true" sync-system="author: altspacevr; app: court">
+       	<a-entity position="-15 0.82 -27.657" scale="0.2 0.2 0.2" geometry="primitive: box" material="color: #8814A8" wire="on: click; emit: toggle; targets: #court, #ball"></a-entity>
+		<a-entity id="ball" n-spawner="res:interactables/basketball" position="-10.55 2.915 -9.74">
+ 		  <a-animation attribute="position"
+		               dur="1000"
+		  				begin="toggle"
+		               direction="alternate"
+		               from="-10.55 -2.915 -9.74"
+		               to="-10.55 2.915 -9.74"
+		               repeat="0"></a-animation>
+       	</a-entity>
+		<a-entity id="court" n-object="res:basketball/court" position="-15.871 0.656 -27.394" rotation="0 0 0" scale="0.05 0.05 0.05" sync="own-on: toggle" sync-transform>
+			
+		  <a-animation attribute="position"
+		  				begin="toggle"
+		               dur="1000"
+		               from="-15.871 0.656 -27.394"
+		               to="-10.55 1.26 -9.74"
+		               direction="alternate"
+		               repeat="0"></a-animation>
+		  <a-animation attribute="scale"
+		  				begin="toggle"
+		               dur="1000"
+		               direction="alternate"
+		               from="0.05 0.05 0.05"
+		               to="1 1 1"
+		               repeat="0"></a-animation
+>		</a-entity>
+	</a-scene>
+</body>
+</html>
