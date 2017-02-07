@@ -28,7 +28,6 @@ AFRAME.registerSystem('sync-system',
 		}
 
 		component.isConnected = false;
-		console.log(this.data);
 		altspace.utilities.sync.connect({
 			authorId: this.data.author,
 			appId: this.data.app,

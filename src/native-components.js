@@ -401,17 +401,17 @@
 		remove: function () {
 			nativeComponentRemove.call(this);
 			if (this.playHandler) {
-			  this.el.removeEventListener(oldData.on, this.playHandler);
+				this.el.removeEventListener(oldData.on, this.playHandler);
 			}
 		},
 		update: function (oldData) {
 			nativeComponentUpdate.call(this, oldData);
 			if (this.playHandler) {
-			  this.el.removeEventListener(oldData.on, this.playHandler);
+				this.el.removeEventListener(oldData.on, this.playHandler);
 			}
 			if (this.data.on) {
-			  this.playHandler = this.playSound.bind(this);
-			  this.el.addEventListener(this.data.on, this.playHandler);
+				this.playHandler = this.playSound.bind(this);
+				this.el.addEventListener(this.data.on, this.playHandler);
 			}
 		},
 		schema: {

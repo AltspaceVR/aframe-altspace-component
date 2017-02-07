@@ -96,72 +96,72 @@
 	* </body>
 	*/
 	AFRAME.registerComponent('altspace', {
-	  version: '1.3.2',
-	  schema: {
-		usePixelScale: { type: 'boolean', default: 'false'},
-		verticalAlign: { type: 'string',  default: 'middle'},
-		enclosuresOnly:{ type: 'boolean', default: 'true'},
-		fullspace:     { type: 'boolean', default: 'false'}
-	  },
+		version: '1.3.2',
+		schema: {
+			usePixelScale: { type: 'boolean', default: 'false'},
+			verticalAlign: { type: 'string',  default: 'middle'},
+			enclosuresOnly:{ type: 'boolean', default: 'true'},
+			fullspace:     { type: 'boolean', default: 'false'}
+		},
 	
-	  /*
-	   * Called once when component is attached. Generally for initial setup.
-	   */
-	  init: function () {
-		if (!(this.el.object3D instanceof THREE.Scene)) {
-		  console.warn('aframe-altspace-component can only be attached to a-scene');
-		  return;
-		}
+		/*
+		 * Called once when component is attached. Generally for initial setup.
+		 */
+		init: function () {
+			if (!(this.el.object3D instanceof THREE.Scene)) {
+				console.warn('aframe-altspace-component can only be attached to a-scene');
+				return;
+			}
 	
-		if (window.altspace && window.altspace.inClient) {
-		  this.el.setAttribute('vr-mode-ui', {enabled: false});
-		  this.initRenderer();
-		  this.initCursorEvents();
-		  this.initCollisionEvents();
-		} else {
-		  console.warn('aframe-altspace-component only works inside of AltspaceVR');
-		}
+			if (window.altspace && window.altspace.inClient) {
+				this.el.setAttribute('vr-mode-ui', {enabled: false});
+				this.initRenderer();
+				this.initCursorEvents();
+				this.initCollisionEvents();
+			} else {
+				console.warn('aframe-altspace-component only works inside of AltspaceVR');
+			}
 	
-	  },
+		},
 	
-	  /*
-	   * Called on every single tick or render loop of the scene.
-	   */
-	  tick: function (t, dt) {
-	      if(this.el.object3D.updateAllBehaviors)
-	        this.el.object3D.updateAllBehaviors();
-	  },
+		/*
+		 * Called on every single tick or render loop of the scene.
+		 */
+		tick: function (t, dt) {
+			if(this.el.object3D.updateAllBehaviors)
+				this.el.object3D.updateAllBehaviors();
+		},
 	
-	  /*
-	   * Called when a component is removed (e.g., via removeAttribute).
-	   * Generally undoes all modifications to the entity.
-	   */
-	  remove: function () { },
+		/*
+		 * Called when a component is removed (e.g., via removeAttribute).
+		 * Generally undoes all modifications to the entity.
+		 */
+		remove: function () { },
 	
-	  /*
-	   * Called on each scene tick.
-	   */
-	  // tick: function (t) { },
+		/*
+		 * Called on each scene tick.
+		 */
+		// tick: function (t) { },
 	
-	  /*
-	   * Called when entity pauses.
-	   * Use to stop or remove any dynamic or background behavior such as events.
-	   */
-	  pause: function () { },
+		/*
+		 * Called when entity pauses.
+		 * Use to stop or remove any dynamic or background behavior such as events.
+		 */
+		pause: function () { },
 	
-	  /*
-	   * Called when entity resumes.
-	   * Use to continue or add any dynamic or background behavior such as events.
-	   */
-	  play: function () { },
+		/*
+		 * Called when entity resumes.
+		 * Use to continue or add any dynamic or background behavior such as events.
+		 */
+		play: function () { },
 	
 	
-	  /********** Helper Methods **********/
+		/********** Helper Methods **********/
 	
-	  /*
-	   * Swap in Altspace renderer when running in AltspaceVR.
-	   */
-	  initRenderer: function () {
+		/*
+		 * Swap in Altspace renderer when running in AltspaceVR.
+		 */
+		initRenderer: function () {
 	
 		var scene = this.el.object3D;
 		altspace.getEnclosure().then(function(e)
@@ -177,29 +177,29 @@
 				scene.scale.setScalar(e.pixelsPerMeter);
 			}
 	
-		  switch (this.data.verticalAlign) {
-			case 'bottom':
-			  scene.position.y -= e.innerHeight / 2;
-			  break;
-			case 'top':
-			  scene.position.y += e.innerHeight / 2;
-			  break;
-			case 'middle':
-			  break;
-			default:
-			  console.warn('Unexpected value for verticalAlign: ', this.data.verticalAlign);
-		  }
+			switch (this.data.verticalAlign) {
+				case 'bottom':
+					scene.position.y -= e.innerHeight / 2;
+					break;
+				case 'top':
+					scene.position.y += e.innerHeight / 2;
+					break;
+				case 'middle':
+					break;
+				default:
+					console.warn('Unexpected value for verticalAlign: ', this.data.verticalAlign);
+			}
 	
-		  if(this.data.enclosuresOnly && e.innerDepth === 1){
+			if(this.data.enclosuresOnly && e.innerDepth === 1){
 			this.el.renderer.render(new THREE.Scene());
 			this.el.renderer = this.el.effect = oldRenderer;
 	
-		  }
+			}
 		}.bind(this));
 	
 		var oldRenderer = this.el.renderer;
 		var renderer = this.el.renderer = this.el.effect = altspace.getThreeJSRenderer({
-		  aframeComponentVersion: this.version
+			aframeComponentVersion: this.version
 		});
 		var noop = function() {};
 		renderer.setSize = noop;
@@ -215,19 +215,19 @@
 		renderer.context = {canvas: {}};
 		renderer.shadowMap = {};
 	
-	  },
+		},
 	
-	  /*
-	   * Emulate A-Frame cursor events when running in altspaceVR.
-	   */
-	  initCursorEvents: function() {
+		/*
+		 * Emulate A-Frame cursor events when running in altspaceVR.
+		 */
+		initCursorEvents: function() {
 	
 		var scene = this.el.object3D;
 		var cursorEl = document.querySelector('a-cursor') || document.querySelector('a-entity[cursor]');
 		if (cursorEl) {
-		  // Hide A-Frame cursor mesh.
-		  cursorEl.setAttribute('material', 'transparent', true);
-		  cursorEl.setAttribute('material', 'opacity', 0.0);
+			// Hide A-Frame cursor mesh.
+			cursorEl.setAttribute('material', 'transparent', true);
+			cursorEl.setAttribute('material', 'opacity', 0.0);
 		}
 	
 		var emit = function (eventName, event) {
@@ -239,35 +239,35 @@
 	
 		var cursordownObj = null;
 		scene.addEventListener('cursordown', function(event) {
-		  cursordownObj = event.target;
-		  emit('mousedown', event);
+			cursordownObj = event.target;
+			emit('mousedown', event);
 		});
 	
 		scene.addEventListener('cursorup', function(event) {
-		  emit('mouseup', event);
-		  if (event.target.uuid === cursordownObj.uuid) {
+			emit('mouseup', event);
+			if (event.target.uuid === cursordownObj.uuid) {
 			emit('click', event);
-		  }
-		  cursordownObj = null;
+			}
+			cursordownObj = null;
 		});
 	
 		scene.addEventListener('cursorenter', function(event) {
-		  if (!event.target.el) { return; }
-		  event.target.el.addState('hovered');
-		  if (cursorEl) cursorEl.addState('hovering');
-		  emit('mouseenter', event);
+			if (!event.target.el) { return; }
+			event.target.el.addState('hovered');
+			if (cursorEl) cursorEl.addState('hovering');
+			emit('mouseenter', event);
 		});
 	
 		scene.addEventListener('cursorleave', function(event) {
-		  if (!event.target.el) { return; }
-		  event.target.el.removeState('hovered');
-		  if (cursorEl) cursorEl.removeState('hovering');
-		  emit('mouseleave', event);
+			if (!event.target.el) { return; }
+			event.target.el.removeState('hovered');
+			if (cursorEl) cursorEl.removeState('hovering');
+			emit('mouseleave', event);
 		});
 	
-	  },
+		},
 	
-	  initCollisionEvents: function () {
+		initCollisionEvents: function () {
 	
 		var scene = this.el.object3D;
 	
@@ -299,7 +299,7 @@
 			emit('triggerexit', event);
 		});
 	
-	  }
+		}
 	
 	});
 
@@ -352,36 +352,36 @@
 	* @memberof altspace
 	*/
 	AFRAME.registerComponent('altspace-tracked-controls', {
-	  init: function () {
+		init: function () {
 		this.gamepadIndex = null;
 		this.trackedControlsSystem = document.querySelector('a-scene').systems['tracked-controls'];
 		this.systemGamepads = 0;
 		altspace.getGamepads();
-	  },
-	  tick: function () {
-		  if (
-			this.trackedControlsSystem &&
-			this.systemGamepads !== this.trackedControlsSystem.controllers.length &&
-			window.altspace && altspace.getGamepads && altspace.getGamepads().length
-		  ) {
-			var components = this.el.components;
-			if (components['paint-controls']) {
-			  this.gamepadIndex = components['paint-controls'].data.hand === 'left' ? 2 : 1;
+		},
+		tick: function () {
+			if (
+				this.trackedControlsSystem &&
+				this.systemGamepads !== this.trackedControlsSystem.controllers.length &&
+				window.altspace && altspace.getGamepads && altspace.getGamepads().length
+			) {
+				var components = this.el.components;
+				if (components['paint-controls']) {
+					this.gamepadIndex = components['paint-controls'].data.hand === 'left' ? 2 : 1;
+				}
+				if (this.gamepadIndex === null && components['hand-controls']) {
+					this.gamepadIndex = components['hand-controls'].data === 'left' ? 2 : 1;
+				}
+				if (this.gamepadIndex === null && components['vive-controls']) {
+					this.gamepadIndex = components['vive-controls'].data.hand === 'left' ? 2 : 1;
+				}
+				if (this.gamepadIndex === null && components['tracked-controls']) {
+					this.gamepadIndex = components['tracked-controls'].data.controller;
+				}
+				this.el.setAttribute('tracked-controls', 'id', altspace.getGamepads()[this.gamepadIndex].id);
+				this.el.setAttribute('tracked-controls', 'controller', 0);
+				this.systemGamepads = this.trackedControlsSystem.controllers.length;
 			}
-			if (this.gamepadIndex === null && components['hand-controls']) {
-			  this.gamepadIndex = components['hand-controls'].data === 'left' ? 2 : 1;
-			}
-			if (this.gamepadIndex === null && components['vive-controls']) {
-			  this.gamepadIndex = components['vive-controls'].data.hand === 'left' ? 2 : 1;
-			}
-			if (this.gamepadIndex === null && components['tracked-controls']) {
-			  this.gamepadIndex = components['tracked-controls'].data.controller;
-			}
-			this.el.setAttribute('tracked-controls', 'id', altspace.getGamepads()[this.gamepadIndex].id);
-			this.el.setAttribute('tracked-controls', 'controller', 0);
-			this.systemGamepads = this.trackedControlsSystem.controllers.length;
-		  }
-	  }
+		}
 	});
 
 
@@ -792,17 +792,17 @@
 			remove: function () {
 				nativeComponentRemove.call(this);
 				if (this.playHandler) {
-				  this.el.removeEventListener(oldData.on, this.playHandler);
+					this.el.removeEventListener(oldData.on, this.playHandler);
 				}
 			},
 			update: function (oldData) {
 				nativeComponentUpdate.call(this, oldData);
 				if (this.playHandler) {
-				  this.el.removeEventListener(oldData.on, this.playHandler);
+					this.el.removeEventListener(oldData.on, this.playHandler);
 				}
 				if (this.data.on) {
-				  this.playHandler = this.playSound.bind(this);
-				  this.el.addEventListener(this.data.on, this.playHandler);
+					this.playHandler = this.playSound.bind(this);
+					this.el.addEventListener(this.data.on, this.playHandler);
 				}
 			},
 			schema: {
@@ -1220,7 +1220,6 @@
 			}
 	
 			component.isConnected = false;
-			console.log(this.data);
 			altspace.utilities.sync.connect({
 				authorId: this.data.author,
 				appId: this.data.app,
@@ -1390,40 +1389,40 @@
 					if (!options) options = {};
 	
 					var later = function() {
-					  previous = options.leading === false ? 0 : Date.now();
-					  timeout = null;
-					  result = func.apply(context, args);
-					  if (!timeout) context = args = null;
+						previous = options.leading === false ? 0 : Date.now();
+						timeout = null;
+						result = func.apply(context, args);
+						if (!timeout) context = args = null;
 					};
 	
 					var throttled = function() {
-					  var now = Date.now();
-					  if (!previous && options.leading === false) previous = now;
-					  var remaining = wait - (now - previous);
-					  context = this;
-					  args = arguments;
-					  if (remaining <= 0 || remaining > wait) {
-						if (timeout) {
-						  clearTimeout(timeout);
-						  timeout = null;
+						var now = Date.now();
+						if (!previous && options.leading === false) previous = now;
+						var remaining = wait - (now - previous);
+						context = this;
+						args = arguments;
+						if (remaining <= 0 || remaining > wait) {
+							if (timeout) {
+								clearTimeout(timeout);
+								timeout = null;
+							}
+							previous = now;
+							result = func.apply(context, args);
+							if (!timeout) context = args = null;
+						} else if (!timeout && options.trailing !== false) {
+							timeout = setTimeout(later, remaining);
 						}
-						previous = now;
-						result = func.apply(context, args);
-						if (!timeout) context = args = null;
-					  } else if (!timeout && options.trailing !== false) {
-						timeout = setTimeout(later, remaining);
-					  }
-					  return result;
+						return result;
 					};
 	
 					throttled.cancel = function() {
-					  clearTimeout(timeout);
-					  previous = 0;
-					  timeout = context = args = null;
+						clearTimeout(timeout);
+						previous = 0;
+						timeout = context = args = null;
 					};
 	
 					return throttled;
-				  };
+				}
 	
 	
 				component.el.addEventListener('componentchanged', onComponentChanged);
