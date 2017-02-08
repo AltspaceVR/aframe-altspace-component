@@ -20,6 +20,10 @@ AFRAME.registerSystem('sync-system',
 		refUrl: { type: 'string', default: null }
 	},
 	init: function() {
+		if (!/altspace-sync-instance/.test(location.search)) {
+			location.search='?altspace-sync-instance=' + (Math.random().toString()).replace('.', '');
+			throw new Error('hi');
+		}
 		var component = this;
 
 		if(!this.data || !this.data.app){
@@ -82,6 +86,8 @@ AFRAME.registerSystem('sync-system',
 			Object.defineProperty(this, 'isMasterClient', {
 				get: function () { return masterClientId === this.clientId; }.bind(this)
 			});
-		}.bind(this));
+		}.bind(this)).catch(function (err) {
+			throw err;
+		});
 	}
 });

@@ -95,6 +95,23 @@
 	*   </a-scene>
 	* </body>
 	*/
+	THREE.Loader.Handlers.add(/jpe?g|png/i, {load: function (url) {
+		if (url && !url.startsWith('http')) {
+			if (url.startsWith('/')) {
+				url = location.origin + url;
+			}
+			else {
+				var currPath = location.pathname;
+				if (!currPath.endsWith('/')) {
+					currPath = location.pathname.split('/').slice(0, -1).join('/') + '/';
+				}
+				url = location.origin + currPath + url;
+			}
+		}
+		console.info('ignoring ' + url);
+		var image = {src: url};
+		return new THREE.Texture(image);
+	}});
 	AFRAME.registerComponent('altspace', {
 		version: '1.3.2',
 		schema: {
@@ -1212,6 +1229,10 @@
 			refUrl: { type: 'string', default: null }
 		},
 		init: function() {
+			if (!/altspace-sync-instance/.test(location.search)) {
+				location.search='?altspace-sync-instance=' + (Math.random().toString()).replace('.', '');
+				throw new Error('hi');
+			}
 			var component = this;
 	
 			if(!this.data || !this.data.app){
@@ -1274,7 +1295,9 @@
 				Object.defineProperty(this, 'isMasterClient', {
 					get: function () { return masterClientId === this.clientId; }.bind(this)
 				});
-			}.bind(this));
+			}.bind(this)).catch(function (err) {
+				throw err;
+			});
 		}
 	});
 

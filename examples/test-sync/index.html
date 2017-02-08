@@ -1,20 +1,43 @@
 <html>
   <head>
     <title>A-Frame Altspace Component - Test Sync</title>
-      <script src="https://aframe.io/releases/0.3.1/aframe.min.js"></script>
+      <script src="https://aframe.io/releases/0.3.1/aframe.js"></script>
       <script src="../../dist/aframe-altspace-component.js"></script>
-      <script src="http://sdk.altvr.com/libs/altspace.js/0.19.2/altspace.min.js"></script>
+      <script>
+        AFRAME.registerElement('altspace-sync', {
+          prototype: Object.create(AFRAME.ANode.prototype, {
+            createdCallback: {
+              value: function () {
+                this.isAssetItem = true;
+                console.log('###################### waiting for sync');
+                setTimeout((function () {
+                  console.log('###################### sync complete');
+                  this.load();
+                }).bind(this), 2000);
+              }
+            }
+          })
+        });
+      </script>
+      <script src="../../../AltspaceSDK/dist/altspace.js"></script>
   </head>
 <body>
     <a-scene debug altspace sync-system="author: altspacevr; app: sync-test">
         <a-assets>
-            <a-mixin id="coneGeo" geometry="primitive: cone; radius-top: 0; radius-bottom: 0.5" material="color: grey"></a-mixin>
-            <a-mixin id="sphereGeo" geometry="primitive: sphere; radius: 0.5;" material="color: grey"></a-mixin>
+            <a-mixin id="coneGeo" geometry="primitive: cone; radius-top: 0; radius-bottom: 0.5" 
+                material="color: red; src: url(../moon/moon.jpg)"></a-mixin>
+            <a-mixin id="sphereGeo" geometry="primitive: sphere; radius: 0.5;" 
+                material="color: grey"></a-mixin>
             <a-mixin id="yoyoAni" attribute="position" direction="alternate"
-                     dur="3000" fill="forwards" repeat="indefinite"></a-mixin>
+                dur="3000" fill="forwards" repeat="indefinite"></a-mixin>
         </a-assets>
 
-        <a-entity position="0 1.8 2">
+		<a-obj-model src="../test-mesh-collider/models/test.obj" mtl="../test-mesh-collider/models/test.mtl"
+			position="0 0 -4"
+			n-mesh-collider="type: environment; convex: false">
+		</a-obj-model>
+
+        <a-entity position="0 1.8 2" rotation="-45 0 0">
             <a-camera look-controls>
                 <a-cursor position="0 0 -1.25"
                           geometry="primitive: ring; radiusOuter: 0.075;
