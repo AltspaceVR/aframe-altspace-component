@@ -6,10 +6,10 @@
 */
 AFRAME.registerComponent('altspace-tracked-controls', {
 	init: function () {
-	this.gamepadIndex = null;
-	this.trackedControlsSystem = document.querySelector('a-scene').systems['tracked-controls'];
-	this.systemGamepads = 0;
-	altspace.getGamepads();
+		this.gamepadIndex = null;
+		this.trackedControlsSystem = document.querySelector('a-scene').systems['tracked-controls'];
+		this.systemGamepads = 0;
+		altspace.getGamepads();
 	},
 	tick: function () {
 		if (

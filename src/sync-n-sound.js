@@ -5,8 +5,7 @@
 * @mixin sync-n-sound
 * @memberof sync
 */
-AFRAME.registerComponent('sync-n-sound',
-{
+AFRAME.registerComponent('sync-n-sound', {
 	dependencies: ['sync'],
 	schema: { },
 	init: function () {
@@ -22,13 +21,13 @@ AFRAME.registerComponent('sync-n-sound',
 
 			function sendEvent(event) {
 				if (!sync.isMine) return;
-				var event = {
+				var remoteEvent = {
 					type: event.type,
 					sender: syncSys.clientId,
 					el: component.el.id,
 					time: Date.now()
 				};
-				component.soundEventRef.set(event);
+				component.soundEventRef.set(remoteEvent);
 			}
 
 			component.el.addEventListener('sound-played', sendEvent);

@@ -8,8 +8,7 @@
 * @mixin sync-transform
 * @memberof sync
 */
-AFRAME.registerComponent('sync-transform',
-{
+AFRAME.registerComponent('sync-transform', {
 	dependencies: ['sync'],
 	schema: {
 	},
