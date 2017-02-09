@@ -10,6 +10,7 @@
 		"AFRAME": true
 	},
 	"rules": {
+		"indent": [1, "tab"],
 		"no-console": 0,
 	}
 }

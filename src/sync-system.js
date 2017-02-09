@@ -11,32 +11,27 @@
 * @prop {string} instance - Override the instance ID. Can also be overridden with
 * a URL parameter.
 */
-AFRAME.registerSystem('sync-system',
-{
-	schema: {
-		author: { type: 'string', default: null },
-		app: { type: 'string', default: null },
-		instance: { type: 'string', default: null },
-		refUrl: { type: 'string', default: null }
-	},
-	init: function() {
+AFRAME.registerElement('altspace-sync', {
+	prototype: Object.create(AFRAME.ANode.prototype, { createdCallback: { value: function() {
 		if (!/altspace-sync-instance/.test(location.search)) {
-			location.search='?altspace-sync-instance=' + (Math.random().toString()).replace('.', '');
-			throw new Error('hi');
+			// The sync utility is going to reload the page anyway, so don't bother loading any assets
+			THREE.XHRLoader.prototype.load = function () { };
+			THREE.Loader.Handlers.add(/jpe?g|png/i, {load: function () { }});
 		}
 		var component = this;
+		this.sceneEl = document.querySelector('a-scene');
 
-		if(!this.data || !this.data.app){
+		if(!this.hasAttribute('app')){
 			console.warn('The sync-system must be present on the scene and configured with required data.');
 			return;
 		}
 
-		component.isConnected = false;
+		component.connected = false;
 		altspace.utilities.sync.connect({
-			authorId: this.data.author,
-			appId: this.data.app,
-			instanceId: this.data.instance,
-			baseRefUrl: this.data.refUrl
+			authorId: this.getAttribute('author'),
+			appId: this.getAttribute('app'),
+			instanceId: this.getAttribute('instance'),
+			baseRefUrl: this.getAttribute('refUrl')
 		}).then(function(connection) {
 			this.connection = connection;
 
@@ -79,7 +74,9 @@ AFRAME.registerSystem('sync-system',
 				snapshot.ref().set(true);
 
 				component.sceneEl.emit('connected', { shouldInitialize: shouldInitialize }, false);
-				component.isConnected = true;
+				component.connected = true;
+				// Indicate that this a-node has finished loading
+				this.load();
 			}.bind(this));
 
 
@@ -89,5 +86,5 @@ AFRAME.registerSystem('sync-system',
 		}.bind(this)).catch(function (err) {
 			throw err;
 		});
-	}
+	}}})
 });

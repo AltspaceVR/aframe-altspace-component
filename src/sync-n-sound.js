@@ -12,9 +12,8 @@ AFRAME.registerComponent('sync-n-sound',
 	init: function () {
 		var component = this;
 		var sync = component.el.components.sync;
-		var scene = document.querySelector('a-scene');
-		var syncSys = scene.systems['sync-system'];
-		if(sync.isConnected) start(); else component.el.addEventListener('connected', start);
+		var syncEl = document.querySelector('altspace-sync');
+		if(sync.connected) start(); else component.el.addEventListener('connected', start);
 
 		function start(){
 			component.soundStateRef = sync.dataRef.child('sound/state');
@@ -22,13 +21,13 @@ AFRAME.registerComponent('sync-n-sound',
 
 			function sendEvent(event) {
 				if (!sync.isMine) return;
-				var event = {
+				var remoteEvent = {
 					type: event.type,
-					sender: syncSys.clientId,
+					sender: syncEl.clientId,
 					el: component.el.id,
 					time: Date.now()
 				};
-				component.soundEventRef.set(event);
+				component.soundEventRef.set(remoteEvent);
 			}
 
 			component.el.addEventListener('sound-played', sendEvent);

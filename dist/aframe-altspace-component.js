@@ -95,23 +95,6 @@
 	*   </a-scene>
 	* </body>
 	*/
-	THREE.Loader.Handlers.add(/jpe?g|png/i, {load: function (url) {
-		if (url && !url.startsWith('http')) {
-			if (url.startsWith('/')) {
-				url = location.origin + url;
-			}
-			else {
-				var currPath = location.pathname;
-				if (!currPath.endsWith('/')) {
-					currPath = location.pathname.split('/').slice(0, -1).join('/') + '/';
-				}
-				url = location.origin + currPath + url;
-			}
-		}
-		console.info('ignoring ' + url);
-		var image = {src: url};
-		return new THREE.Texture(image);
-	}});
 	AFRAME.registerComponent('altspace', {
 		version: '1.3.2',
 		schema: {
@@ -1076,10 +1059,9 @@
 		},
 		init: function () {
 			var scene = document.querySelector('a-scene');
-			var syncSys = scene.systems['sync-system'];
+			var syncEl = document.querySelector('altspace-sync');
 	
 			var ref;
-			var key;
 			var dataRef;
 			var ownerRef;
 			var ownerId;
@@ -1087,17 +1069,16 @@
 	
 			var component = this;
 	
-			component.isConnected = false;
+			component.connected = false;
 	
-			if(syncSys.isConnected) start(); else scene.addEventListener('connected', start);
-	
+			if(syncEl.connected) start(); else scene.addEventListener('connected', start);
 	
 			if(component.data.ownOn)
 			{
 				var ownershipEvents = component.data.ownOn.split(/[ ,]+/);
 				for(var i = 0, max = ownershipEvents.length; i < max; i++){
 					component.el.addEventListener(ownershipEvents[i], function(){
-						if(component.isConnected){
+						if(component.connected){
 							component.takeOwnership();
 						}
 					});
@@ -1108,7 +1089,7 @@
 				//Make sure someone always owns an object. If the owner leaves and we are the master client, we will take it.
 				//This ensures, for example, that synced animations keep playing
 				scene.addEventListener('clientleft', function(event){
-					var shouldTakeOwnership = (!ownerId || ownerId === event.detail.id) && syncSys.isMasterClient;
+					var shouldTakeOwnership = (!ownerId || ownerId === event.detail.id) && syncEl.isMasterClient;
 	
 					if(shouldTakeOwnership) component.takeOwnership();
 				});
@@ -1120,10 +1101,7 @@
 						return;
 					}
 	
-					console.log('syncSys: ' + syncSys);
-					console.log('syncSys.sceneRef: ' + syncSys.sceneRef);
-	
-					link(syncSys.sceneRef.child(id));
+					link(syncEl.sceneRef.child(id));
 					setupReceive();
 	
 				} else {
@@ -1131,13 +1109,12 @@
 					return;
 				}
 	
-				component.isConnected = true;
+				component.connected = true;
 				component.el.emit('connected', null, false);
 			}
 	
 			function link(entityRef) {
 				ref = entityRef;
-				key = ref.key();
 				dataRef = ref.child('data');
 				component.dataRef = dataRef;
 				ownerRef = ref.child('owner');
@@ -1150,19 +1127,19 @@
 					if (owner) return undefined;
 	
 					ownerRef.onDisconnect().set(null);
-					return syncSys.clientId;
+					return syncEl.clientId;
 				});
 	
 				ownerRef.on('value',
 					function(snapshot) {
 						var newOwnerId = snapshot.val();
 	
-						var gained = newOwnerId === syncSys.clientId && !isMine;
+						var gained = newOwnerId === syncEl.clientId && !isMine;
 						if (gained) component.el.emit('ownershipgained', null, false);
 	
 	
 						//note this also fires when we start up without ownership
-						var lost = newOwnerId !== syncSys.clientId && isMine;
+						var lost = newOwnerId !== syncEl.clientId && isMine;
 						if (lost){
 							component.el.emit('ownershiplost', null, false);
 	
@@ -1172,7 +1149,7 @@
 	
 						ownerId = newOwnerId;
 	
-						isMine = newOwnerId === syncSys.clientId;
+						isMine = newOwnerId === syncEl.clientId;
 					});
 			}
 	
@@ -1182,7 +1159,7 @@
 			* @method sync.sync#takeOwnership
 			*/
 			component.takeOwnership = function() {
-				ownerRef.set(syncSys.clientId);
+				ownerRef.set(syncEl.clientId);
 	
 				//clear our ownership if we disconnect
 				//this is needed if we are the last user in the room, but we expect people to join later
@@ -1220,32 +1197,27 @@
 	* @prop {string} instance - Override the instance ID. Can also be overridden with
 	* a URL parameter.
 	*/
-	AFRAME.registerSystem('sync-system',
-	{
-		schema: {
-			author: { type: 'string', default: null },
-			app: { type: 'string', default: null },
-			instance: { type: 'string', default: null },
-			refUrl: { type: 'string', default: null }
-		},
-		init: function() {
+	AFRAME.registerElement('altspace-sync', {
+		prototype: Object.create(AFRAME.ANode.prototype, { createdCallback: { value: function() {
 			if (!/altspace-sync-instance/.test(location.search)) {
-				location.search='?altspace-sync-instance=' + (Math.random().toString()).replace('.', '');
-				throw new Error('hi');
+				// The sync utility is going to reload the page anyway, so don't bother loading any assets
+				THREE.XHRLoader.prototype.load = function () { };
+				THREE.Loader.Handlers.add(/jpe?g|png/i, {load: function () { }});
 			}
 			var component = this;
+			this.sceneEl = document.querySelector('a-scene');
 	
-			if(!this.data || !this.data.app){
+			if(!this.hasAttribute('app')){
 				console.warn('The sync-system must be present on the scene and configured with required data.');
 				return;
 			}
 	
-			component.isConnected = false;
+			component.connected = false;
 			altspace.utilities.sync.connect({
-				authorId: this.data.author,
-				appId: this.data.app,
-				instanceId: this.data.instance,
-				baseRefUrl: this.data.refUrl
+				authorId: this.getAttribute('author'),
+				appId: this.getAttribute('app'),
+				instanceId: this.getAttribute('instance'),
+				baseRefUrl: this.getAttribute('refUrl')
 			}).then(function(connection) {
 				this.connection = connection;
 	
@@ -1288,7 +1260,9 @@
 					snapshot.ref().set(true);
 	
 					component.sceneEl.emit('connected', { shouldInitialize: shouldInitialize }, false);
-					component.isConnected = true;
+					component.connected = true;
+					// Indicate that this a-node has finished loading
+					this.load();
 				}.bind(this));
 	
 	
@@ -1298,7 +1272,7 @@
 			}.bind(this)).catch(function (err) {
 				throw err;
 			});
-		}
+		}}})
 	});
 
 
@@ -1324,7 +1298,7 @@
 		init: function () {
 			var component = this;
 			var sync = component.el.components.sync;
-			if(sync.isConnected) start(); else component.el.addEventListener('connected', start);
+			if(sync.connected) start(); else component.el.addEventListener('connected', start);
 	
 			function start(){
 	
@@ -1473,7 +1447,7 @@
 		init: function () {
 			var component = this;
 			var sync = component.el.components.sync;
-			if(sync.isConnected) start(); else component.el.addEventListener('connected', start);
+			if(sync.connected) start(); else component.el.addEventListener('connected', start);
 	
 			function start(){
 				var colorRef = sync.dataRef.child('material/color');
@@ -1532,9 +1506,8 @@
 		init: function () {
 			var component = this;
 			var sync = component.el.components.sync;
-			var scene = document.querySelector('a-scene');
-			var syncSys = scene.systems['sync-system'];
-			if(sync.isConnected) start(); else component.el.addEventListener('connected', start);
+			var syncEl = document.querySelector('altspace-sync');
+			if(sync.connected) start(); else component.el.addEventListener('connected', start);
 	
 			function start(){
 				component.soundStateRef = sync.dataRef.child('sound/state');
@@ -1542,13 +1515,13 @@
 	
 				function sendEvent(event) {
 					if (!sync.isMine) return;
-					var event = {
+					var remoteEvent = {
 						type: event.type,
-						sender: syncSys.clientId,
+						sender: syncEl.clientId,
 						el: component.el.id,
 						time: Date.now()
 					};
-					component.soundEventRef.set(event);
+					component.soundEventRef.set(remoteEvent);
 				}
 	
 				component.el.addEventListener('sound-played', sendEvent);

@@ -13,7 +13,7 @@ AFRAME.registerComponent('sync-color',
 	init: function () {
 		var component = this;
 		var sync = component.el.components.sync;
-		if(sync.isConnected) start(); else component.el.addEventListener('connected', start);
+		if(sync.connected) start(); else component.el.addEventListener('connected', start);
 
 		function start(){
 			var colorRef = sync.dataRef.child('material/color');

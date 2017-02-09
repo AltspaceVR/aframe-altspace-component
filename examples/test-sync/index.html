@@ -3,26 +3,11 @@
     <title>A-Frame Altspace Component - Test Sync</title>
       <script src="https://aframe.io/releases/0.3.1/aframe.js"></script>
       <script src="../../dist/aframe-altspace-component.js"></script>
-      <script>
-        AFRAME.registerElement('altspace-sync', {
-          prototype: Object.create(AFRAME.ANode.prototype, {
-            createdCallback: {
-              value: function () {
-                this.isAssetItem = true;
-                console.log('###################### waiting for sync');
-                setTimeout((function () {
-                  console.log('###################### sync complete');
-                  this.load();
-                }).bind(this), 2000);
-              }
-            }
-          })
-        });
-      </script>
       <script src="../../../AltspaceSDK/dist/altspace.js"></script>
   </head>
 <body>
-    <a-scene debug altspace sync-system="author: altspacevr; app: sync-test">
+    <a-scene debug altspace>
+      <altspace-sync author="altspacevr" app="sync-test"></altspace-sync>
         <a-assets>
             <a-mixin id="coneGeo" geometry="primitive: cone; radius-top: 0; radius-bottom: 0.5" 
                 material="color: red; src: url(../moon/moon.jpg)"></a-mixin>

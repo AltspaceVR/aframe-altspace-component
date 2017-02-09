@@ -16,7 +16,7 @@ AFRAME.registerComponent('sync-transform',
 	init: function () {
 		var component = this;
 		var sync = component.el.components.sync;
-		if(sync.isConnected) start(); else component.el.addEventListener('connected', start);
+		if(sync.connected) start(); else component.el.addEventListener('connected', start);
 
 		function start(){
 

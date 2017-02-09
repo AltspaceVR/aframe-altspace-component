@@ -30,10 +30,9 @@ AFRAME.registerComponent('sync',
 	},
 	init: function () {
 		var scene = document.querySelector('a-scene');
-		var syncSys = scene.systems['sync-system'];
+		var syncEl = document.querySelector('altspace-sync');
 
 		var ref;
-		var key;
 		var dataRef;
 		var ownerRef;
 		var ownerId;
@@ -41,17 +40,16 @@ AFRAME.registerComponent('sync',
 
 		var component = this;
 
-		component.isConnected = false;
+		component.connected = false;
 
-		if(syncSys.isConnected) start(); else scene.addEventListener('connected', start);
-
+		if(syncEl.connected) start(); else scene.addEventListener('connected', start);
 
 		if(component.data.ownOn)
 		{
 			var ownershipEvents = component.data.ownOn.split(/[ ,]+/);
 			for(var i = 0, max = ownershipEvents.length; i < max; i++){
 				component.el.addEventListener(ownershipEvents[i], function(){
-					if(component.isConnected){
+					if(component.connected){
 						component.takeOwnership();
 					}
 				});
@@ -62,7 +60,7 @@ AFRAME.registerComponent('sync',
 			//Make sure someone always owns an object. If the owner leaves and we are the master client, we will take it.
 			//This ensures, for example, that synced animations keep playing
 			scene.addEventListener('clientleft', function(event){
-				var shouldTakeOwnership = (!ownerId || ownerId === event.detail.id) && syncSys.isMasterClient;
+				var shouldTakeOwnership = (!ownerId || ownerId === event.detail.id) && syncEl.isMasterClient;
 
 				if(shouldTakeOwnership) component.takeOwnership();
 			});
@@ -74,10 +72,7 @@ AFRAME.registerComponent('sync',
 					return;
 				}
 
-				console.log('syncSys: ' + syncSys);
-				console.log('syncSys.sceneRef: ' + syncSys.sceneRef);
-
-				link(syncSys.sceneRef.child(id));
+				link(syncEl.sceneRef.child(id));
 				setupReceive();
 
 			} else {
@@ -85,13 +80,12 @@ AFRAME.registerComponent('sync',
 				return;
 			}
 
-			component.isConnected = true;
+			component.connected = true;
 			component.el.emit('connected', null, false);
 		}
 
 		function link(entityRef) {
 			ref = entityRef;
-			key = ref.key();
 			dataRef = ref.child('data');
 			component.dataRef = dataRef;
 			ownerRef = ref.child('owner');
@@ -104,19 +98,19 @@ AFRAME.registerComponent('sync',
 				if (owner) return undefined;
 
 				ownerRef.onDisconnect().set(null);
-				return syncSys.clientId;
+				return syncEl.clientId;
 			});
 
 			ownerRef.on('value',
 				function(snapshot) {
 					var newOwnerId = snapshot.val();
 
-					var gained = newOwnerId === syncSys.clientId && !isMine;
+					var gained = newOwnerId === syncEl.clientId && !isMine;
 					if (gained) component.el.emit('ownershipgained', null, false);
 
 
 					//note this also fires when we start up without ownership
-					var lost = newOwnerId !== syncSys.clientId && isMine;
+					var lost = newOwnerId !== syncEl.clientId && isMine;
 					if (lost){
 						component.el.emit('ownershiplost', null, false);
 
@@ -126,7 +120,7 @@ AFRAME.registerComponent('sync',
 
 					ownerId = newOwnerId;
 
-					isMine = newOwnerId === syncSys.clientId;
+					isMine = newOwnerId === syncEl.clientId;
 				});
 		}
 
@@ -136,7 +130,7 @@ AFRAME.registerComponent('sync',
 		* @method sync.sync#takeOwnership
 		*/
 		component.takeOwnership = function() {
-			ownerRef.set(syncSys.clientId);
+			ownerRef.set(syncEl.clientId);
 
 			//clear our ownership if we disconnect
 			//this is needed if we are the last user in the room, but we expect people to join later
