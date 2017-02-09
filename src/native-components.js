@@ -46,7 +46,7 @@
 		var mesh = this.el.getObject3D('mesh');
 		altspace.removeNativeComponent(mesh, this.name);
 	}
-	function nativeComponentUpdate(oldData) {
+	function nativeComponentUpdate() {
 		altspace.updateNativeComponent(this.el.object3DMap.mesh, this.name, this.data);
 	}
 
@@ -261,7 +261,7 @@
 				altspace.removeNativeComponent(mesh, this.name);
 			}.bind(this));
 		},
-		update: function (oldData) {
+		update: function () {
 			this._forEachMesh(function (mesh) {
 				altspace.updateNativeComponent(mesh, this.name, this.data);
 			}.bind(this));
@@ -401,17 +401,17 @@
 		remove: function () {
 			nativeComponentRemove.call(this);
 			if (this.playHandler) {
-			  this.el.removeEventListener(oldData.on, this.playHandler);
+				this.el.removeEventListener(this.data.on, this.playHandler);
 			}
 		},
 		update: function (oldData) {
 			nativeComponentUpdate.call(this, oldData);
 			if (this.playHandler) {
-			  this.el.removeEventListener(oldData.on, this.playHandler);
+				this.el.removeEventListener(oldData.on, this.playHandler);
 			}
 			if (this.data.on) {
-			  this.playHandler = this.playSound.bind(this);
-			  this.el.addEventListener(this.data.on, this.playHandler);
+				this.playHandler = this.playSound.bind(this);
+				this.el.addEventListener(this.data.on, this.playHandler);
 			}
 		},
 		schema: {

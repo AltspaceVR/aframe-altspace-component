@@ -11,8 +11,7 @@
 * @prop {string} instance - Override the instance ID. Can also be overridden with
 * a URL parameter.
 */
-AFRAME.registerSystem('sync-system',
-{
+AFRAME.registerSystem('sync-system', {
 	schema: {
 		author: { type: 'string', default: null },
 		app: { type: 'string', default: null },
@@ -28,7 +27,6 @@ AFRAME.registerSystem('sync-system',
 		}
 
 		component.isConnected = false;
-		console.log(this.data);
 		altspace.utilities.sync.connect({
 			authorId: this.data.author,
 			appId: this.data.app,

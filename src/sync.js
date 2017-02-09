@@ -22,8 +22,7 @@
 * will cause the local client to take ownership of this object. This field
 * cannot be updated after initialization.
 */
-AFRAME.registerComponent('sync',
-{
+AFRAME.registerComponent('sync', {
 	schema: {
 		mode: { default: 'link' },
 		ownOn: { type: 'string' } //cannot be changed after creation
@@ -33,7 +32,6 @@ AFRAME.registerComponent('sync',
 		var syncSys = scene.systems['sync-system'];
 
 		var ref;
-		var key;
 		var dataRef;
 		var ownerRef;
 		var ownerId;
@@ -91,7 +89,6 @@ AFRAME.registerComponent('sync',
 
 		function link(entityRef) {
 			ref = entityRef;
-			key = ref.key();
 			dataRef = ref.child('data');
 			component.dataRef = dataRef;
 			ownerRef = ref.child('owner');

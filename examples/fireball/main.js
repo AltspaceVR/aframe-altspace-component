@@ -12,7 +12,7 @@
 		var scoreEffect0 = document.querySelector('#score-effect0');
 		var scoreEffect1 = document.querySelector('#score-effect1');
 
-		window.game = {
+		var game = window.game = {
 			basket: basket,
 			scoreText: scoreText,
 			clockText: clockText,
