@@ -10,8 +10,7 @@
  * @property {selector} targets A selector to pick which objects to wire to
  * @property {selector} target - A selector to pick a single object to wire to
  **/
-AFRAME.registerComponent('wire',
-{
+AFRAME.registerComponent('wire', {
 	multiple: true,
 	schema: {
 		on: {type: 'string'},

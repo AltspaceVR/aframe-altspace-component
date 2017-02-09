@@ -5,8 +5,7 @@
 * @mixin sync-n-sound
 * @memberof sync
 */
-AFRAME.registerComponent('sync-n-sound',
-{
+AFRAME.registerComponent('sync-n-sound', {
 	dependencies: ['sync'],
 	schema: { },
 	init: function () {

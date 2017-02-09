@@ -5,8 +5,7 @@
 * @mixin sync-color
 * @memberof sync
 */
-AFRAME.registerComponent('sync-color',
-{
+AFRAME.registerComponent('sync-color', {
 	dependencies: ['sync'],
 	schema: {
 	},

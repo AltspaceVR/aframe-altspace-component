@@ -12,5 +12,6 @@
 	"rules": {
 		"indent": [1, "tab"],
 		"no-console": 0,
+		"indent": ["error", "tab", {"SwitchCase": 1}],
 	}
 }

@@ -22,8 +22,7 @@
 * will cause the local client to take ownership of this object. This field
 * cannot be updated after initialization.
 */
-AFRAME.registerComponent('sync',
-{
+AFRAME.registerComponent('sync', {
 	schema: {
 		mode: { default: 'link' },
 		ownOn: { type: 'string' } //cannot be changed after creation
