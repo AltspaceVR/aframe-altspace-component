@@ -1,4 +1,4 @@
-## DEPRECATED! This repo has been replaced by [AltspaceVR/AltspaceSDK](github.com/AltspaceVR/AltspaceSDK)
+## DEPRECATED! This repo has been replaced by [AltspaceVR/AltspaceSDK](https://github.com/AltspaceVR/AltspaceSDK)
 
 When it comes to building something quick in AltspaceVR, it’s hard to beat [A-Frame](https://aframe.io/). It has a simple HTML-based syntax, so anyone acquainted with web development will pick it up in no time. On the other hand, if you don’t know what an HTML tag is, or how to add an image to a page, you should go through MDN’s terrific [Introduction to HTML](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Introduction) before you continue.
 
