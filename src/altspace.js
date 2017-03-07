@@ -145,6 +145,7 @@ AFRAME.registerComponent('altspace', {
 	renderer.getPixelRatio = noop;
 	renderer.getMaxAnisotropy = noop;
 	renderer.setFaceCulling = noop;
+    renderer.requestAnimationFrame = window.requestAnimationFrame;
 	renderer.context = {canvas: {}};
 	renderer.shadowMap = {};
 
